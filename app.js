@@ -1,5 +1,5 @@
 "use strict";
-const APP_VERSION="0.7.0";
+const APP_VERSION="0.8.0";
 const DB_NAME="dantestocks-human-annotation-v06";
 const DB_VERSION=1;
 const STORE_STATE="state", STORE_SNAP="snapshots", STORE_HANDLES="handles";
@@ -107,7 +107,7 @@ function applyTheme(theme){
 }
 function initTheme(){
   const saved=localStorage.getItem("dantestocks-theme");
-  const initial=saved||(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+  const initial=(saved==="dark"||saved==="light")?saved:"light";
   applyTheme(initial);
 }
 function toggleTheme(){applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark");}
