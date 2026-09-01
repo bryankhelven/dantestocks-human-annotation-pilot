@@ -1,5 +1,5 @@
 "use strict";
-const APP_VERSION="0.8.0";
+const APP_VERSION="0.9.0";
 const DB_NAME="dantestocks-human-annotation-v06";
 const DB_VERSION=1;
 const STORE_STATE="state", STORE_SNAP="snapshots", STORE_HANDLES="handles";
@@ -18,7 +18,6 @@ const CONF=[{code:"HIGH",name:"Alta"},{code:"MEDIUM",name:"Média"},{code:"LOW",
 const PILOT_PACKAGE=window.DANTESTOCKS_PILOT_PACKAGE_01||null;
 let selectedAnnotator=null;
 
-const DEMO_ASSIGNMENT={"assignment_id":"DEMO_A2_v0.2","annotator_id":"A2-DEMO","pilot_version":"0.2","guideline_version":"0.2","webapp_min_version":"0.4.0","randomization_seed":"DEMO-SEED-20260901","items":[{"post_id":"demo_001","text":"PETR4 fechou a 38,20, alta de 2,1%.","display_source_annotation":true,"source_annotation":{"labels":["joy"],"note":"Emoção marcada como presente na anotação original."}},{"post_id":"demo_002","text":"Finalmente bateu meu alvo! Que maravilha!","display_source_annotation":false},{"post_id":"demo_003","text":"Se perder esse suporte amanhã, isso pode ficar muito feio.","display_source_annotation":true,"source_annotation":{"labels":["fear","anticipation"],"note":"Emoções marcadas como presentes na anotação original."}},{"post_id":"demo_004","text":"A empresa divulgará resultados amanhã após o pregão.","display_source_annotation":false},{"post_id":"demo_005","text":"Essa diretoria precisa responder por isso!","display_source_annotation":true,"source_annotation":{"labels":["anger","disgust"],"note":"Emoções marcadas como presentes na anotação original."}},{"post_id":"demo_006","text":"Como assim subiu 12% hoje?!","display_source_annotation":false},{"post_id":"demo_007","text":"Continuo tranquilo com essa empresa no longo prazo.","display_source_annotation":true,"source_annotation":{"labels":["trust"],"note":"Emoção marcada como presente na anotação original."}},{"post_id":"demo_008","text":"Suporte em 35, resistência em 38.","display_source_annotation":false},{"post_id":"demo_009","text":"Parabéns à diretoria, mais um prejuízo histórico 👏","display_source_annotation":true,"source_annotation":{"labels":["disgust","sadness"],"note":"Emoções marcadas como presentes na anotação original."}},{"post_id":"demo_010","text":"Quero ver se amanhã consegue romper 65.","display_source_annotation":false},{"post_id":"demo_011","text":"Balanço será divulgado amanhã após o pregão.","display_source_annotation":true,"source_annotation":{"labels":["neutral"],"note":"O item foi marcado como neutro na anotação original."}},{"post_id":"demo_012","text":"Estou preocupado com o que pode acontecer depois do anúncio.","display_source_annotation":false}]};
 let db=null, assignment=null, assignmentRaw="", assignmentHash="", state=null, currentIndex=0, itemOpenedAt=null, lastTick=Date.now(), timer=null, lastSnapshotCompleted=0, externalDirHandle=null;
 const $=id=>document.getElementById(id);
 
@@ -47,12 +46,27 @@ function responseFor(postId){
 function completedCount(){return assignment.items.reduce((n,it)=>{const r=state.responses[it.post_id];return n+(r&&r.primary_emotion&&r.confidence?1:0)},0)}
 function deferredCount(){return Object.values(state.deferred||{}).filter(Boolean).length}
 function allComplete(){return completedCount()===assignment.items.length}
-function renderEmotionGrid(){const el=$("emotionGrid");el.innerHTML="";EMOTIONS.forEach((e,i)=>{const lab=document.createElement("label");lab.className="emotion-card";lab.innerHTML=`<input type="radio" name="emotion" value="${e.code}"><span class="emotion-name">${e.name}</span><span class="emotion-code">${e.code}</span><div class="emotion-micro">${e.micro}</div>`;lab.querySelector("input").addEventListener("change",()=>{setEmotion(e.code)});el.appendChild(lab)})}
-function renderConfidence(){const el=$("confidenceControl");el.innerHTML="";CONF.forEach(c=>{const lab=document.createElement("label");lab.className="segment";lab.innerHTML=`<input type="radio" name="confidence" value="${c.code}">${c.name}`;lab.querySelector("input").addEventListener("change",()=>{setConfidence(c.code)});el.appendChild(lab)})}
+function renderEmotionGrid(){
+  const el=$("emotionGrid");el.innerHTML="";
+  EMOTIONS.forEach((e,i)=>{
+    const lab=document.createElement("label");lab.className="emotion-card";
+    lab.innerHTML=`<input type="radio" name="emotion" value="${e.code}"><div class="emotion-top"><span class="emotion-name">${e.name}</span><span class="emotion-meta"><span class="emotion-key">${i+1}</span>${e.code}</span></div><div class="emotion-micro">${e.micro}</div>`;
+    lab.querySelector("input").addEventListener("change",()=>{setEmotion(e.code)});el.appendChild(lab)
+  })
+}
+function renderConfidence(){
+  const el=$("confidenceControl");el.innerHTML="";
+  CONF.forEach(c=>{
+    const lab=document.createElement("label");lab.className="segment";
+    const note=c.code==="MEDIUM"?'<span class="default-note">padrão</span>':'';
+    lab.innerHTML=`<input type="radio" name="confidence" value="${c.code}"><span>${c.name}</span>${note}`;
+    lab.querySelector("input").addEventListener("change",()=>{setConfidence(c.code)});el.appendChild(lab)
+  })
+}
 function tickElapsed(){if(!assignment||$("workspace").classList.contains("hidden"))return;const item=assignment.items[currentIndex];if(!item)return;const r=responseFor(item.post_id);const t=Date.now();r.elapsed_seconds+=(t-lastTick)/1000;lastTick=t}
 function startTimer(){clearInterval(timer);lastTick=Date.now();timer=setInterval(()=>{tickElapsed();saveState().catch(()=>{})},5000)}
 function currentItem(){return assignment.items[currentIndex]}
-function renderCurrent(){if(!assignment)return;if(allComplete()){showFinish();return}const item=currentItem();if(!item)return;const r=responseFor(item.post_id);if(!r.first_opened_at)r.first_opened_at=now();if(!r.confidence){r.confidence="MEDIUM";r.confidence_defaulted=true;r.confidence_edited=false;}itemOpenedAt=Date.now();lastTick=Date.now();$("postId").textContent=item.post_id;$("postText").textContent=item.text;
+function renderCurrent(){if(!assignment)return;if(allComplete()){showFinish();return}const item=currentItem();if(!item)return;const r=responseFor(item.post_id);if(!r.first_opened_at)r.first_opened_at=now();if(!r.confidence){r.confidence="MEDIUM";r.confidence_defaulted=true;r.confidence_edited=false;}itemOpenedAt=Date.now();lastTick=Date.now();$("postId").textContent=item.post_id;if($("itemPosition"))$("itemPosition").textContent=`Item ${currentIndex+1} de ${assignment.items.length}`;$("postText").textContent=item.text;$("postText").scrollTop=0;
   const sp=$("sourcePanel"), sl=$("sourceLabels"), sn=$("sourceNote");sl.innerHTML="";sn.textContent="";
   if(item.display_source_annotation&&item.source_annotation){sp.classList.remove("hidden");const labs=item.source_annotation.labels||[];if(labs.length){labs.forEach(code=>{const e=EMOTIONS.find(x=>x.code===code);const chip=document.createElement("span");chip.className="source-chip";chip.textContent=e?`${e.name} · ${code}`:code;sl.appendChild(chip)})}else{const chip=document.createElement("span");chip.className="source-chip";chip.textContent="Sem emoção original listada";sl.appendChild(chip)}const note=item.source_annotation.note||"";sn.textContent=(note&&note!=="Anotação original do DANTEStocks; informação de origem, não limita a escolha.")?note:""}else sp.classList.add("hidden");
   document.querySelectorAll('input[name="emotion"]').forEach(inp=>{inp.checked=inp.value===r.primary_emotion;inp.closest('.emotion-card').classList.toggle('selected',inp.checked)});
@@ -60,7 +74,12 @@ function renderCurrent(){if(!assignment)return;if(allComplete()){showFinish();re
   $("ambiguity").checked=!!r.ambiguity_flag;$("comment").value=r.comment||"";$("comment").classList.toggle("hidden",!(r.comment&&r.comment.length));$("commentToggle").textContent=$("comment").classList.contains("hidden")?"+ Adicionar comentário":"- Ocultar comentário";
   updateHint(r.primary_emotion);updateControls();updateHeader();saveState().catch(()=>{});startTimer();
 }
-function updateHint(code){const box=$("dynamicHint");const e=EMOTIONS.find(x=>x.code===code);if(!e){box.innerHTML="<h3>Escolha uma label</h3><p>A pista aparecerá aqui sem revelar nenhuma resposta anterior.</p>";return}box.innerHTML=`<h3>${escapeHtml(e.name)} <span class="emotion-code">${e.code}</span></h3><p><strong>Centro:</strong> ${escapeHtml(e.center)}</p><p><strong>Compare com:</strong> ${escapeHtml(e.compare)}</p><p><strong>Não use só porque:</strong> ${escapeHtml(e.not)}</p>`}
+function updateHint(code){
+  const box=$("dynamicHint");const e=EMOTIONS.find(x=>x.code===code);
+  box.classList.toggle("is-empty",!e);
+  if(!e){box.innerHTML='<div class="hint-empty">Selecione uma categoria. A checagem comparativa aparecerá aqui.</div>';return}
+  box.innerHTML=`<div class="hint-header"><strong>Checagem rápida: ${escapeHtml(e.name)}</strong><span>${e.code}</span></div><div class="hint-grid"><div class="hint-cell"><b>Centro</b>${escapeHtml(e.center)}</div><div class="hint-cell"><b>Compare com</b>${escapeHtml(e.compare)}</div><div class="hint-cell"><b>Não use só porque</b>${escapeHtml(e.not)}</div></div>`
+}
 function updateControls(){const r=responseFor(currentItem().post_id);$("saveNext").disabled=!(r.primary_emotion&&r.confidence);$("prevItem").disabled=currentIndex===0;$("deferredCount").textContent=deferredCount()}
 function updateHeader(){const done=completedCount();$("progressText").textContent=`${done} / ${assignment.items.length}`;$("assignmentMeta").textContent=`${assignment.annotator_id} · Guideline ${assignment.guideline_version} · App ${APP_VERSION}`;$("deferredCount").textContent=deferredCount()}
 async function setEmotion(code){tickElapsed();const r=responseFor(currentItem().post_id);if(r.primary_emotion&&r.primary_emotion!==code)r.revision_count++;r.primary_emotion=code;r.last_saved_at=now();document.querySelectorAll('.emotion-card').forEach(card=>{const inp=card.querySelector('input');card.classList.toggle('selected',inp.value===code);inp.checked=inp.value===code});updateHint(code);updateControls();$("saveState").textContent="Salvando…";await saveState()}
@@ -72,10 +91,10 @@ async function verifyPermission(handle,write=false){const opts={mode:write?"read
 function renderBackupSetupStatus(){
  const badge=$("backupSetupBadge"), btn=$("chooseBackupDir");
  if(!badge||!btn)return;
- if(externalDirHandle){badge.textContent="Ativado ✓";badge.className="backup-status-badge active";btn.textContent="Trocar pasta de backup";btn.classList.add("configured");$("backupSupport").textContent="Checkpoints externos serão gravados automaticamente a cada 10 decisões.";return}
+ if(externalDirHandle){badge.textContent="Ativado ✓";badge.className="status-badge active";btn.textContent="Trocar pasta de backup";btn.classList.add("configured");$("backupSupport").textContent="Checkpoints externos serão gravados automaticamente a cada 10 decisões.";return}
  btn.classList.remove("configured");
- if(!window.showDirectoryPicker){badge.textContent="Backup interno ativo";badge.className="backup-status-badge internal";btn.textContent="Backup externo não suportado neste navegador";btn.disabled=true;$("backupSupport").textContent="O autosave e os snapshots internos continuam funcionando normalmente.";return}
- badge.textContent="Não configurado";badge.className="backup-status-badge pending";btn.textContent="Ativar backup automático →";btn.disabled=false;$("backupSupport").textContent="Escolha uma pasta uma vez; depois o backup é automático.";
+ if(!window.showDirectoryPicker){badge.textContent="Backup interno ativo";badge.className="status-badge internal";btn.textContent="Backup externo não suportado neste navegador";btn.disabled=true;$("backupSupport").textContent="O autosave e os snapshots internos continuam funcionando normalmente.";return}
+ badge.textContent="Não configurado";badge.className="status-badge pending";btn.textContent="Ativar backup automático →";btn.disabled=false;$("backupSupport").textContent="Escolha uma pasta uma vez; depois o backup é automático.";
 }
 async function chooseBackup(){if(!window.showDirectoryPicker){renderBackupSetupStatus();return}try{externalDirHandle=await window.showDirectoryPicker({mode:"readwrite"});await idbPut(STORE_HANDLES,"backupDir",externalDirHandle);renderBackupSetupStatus()}catch(e){if(e.name!=="AbortError"){$("backupSupport").textContent="Não foi possível ativar a pasta; snapshots internos continuam ativos."}renderBackupSetupStatus()}}
 async function buildExportPayload(){return {format:"DANTEStocks_HUMAN_PILOT_RESPONSE_v0.3",assignment_id:assignment.assignment_id,assignment_sha256:assignmentHash,annotator_id:assignment.annotator_id,pilot_version:assignment.pilot_version,guideline_version:assignment.guideline_version,webapp_version:APP_VERSION,exported_at:now(),responses:assignment.items.map((it,i)=>{const r=responseFor(it.post_id);return {post_id:it.post_id,random_order:i+1,primary_emotion:r.primary_emotion,confidence:r.confidence,confidence_defaulted:!!r.confidence_defaulted,confidence_edited:!!r.confidence_edited,ambiguity_flag:!!r.ambiguity_flag,comment:r.comment||"",first_opened_at:r.first_opened_at,first_saved_at:r.first_saved_at,last_saved_at:r.last_saved_at,elapsed_seconds:Math.round((r.elapsed_seconds||0)*10)/10,revision_count:r.revision_count||0}})}}
@@ -123,7 +142,6 @@ async function init(){initTheme();db=await openDB();renderEmotionGrid();renderCo
  $("startPackage").onclick=startSelectedPackage;
  if($("themeToggle"))$("themeToggle").onclick=toggleTheme;
  $("checkpointInput").addEventListener("change",async e=>{const f=e.target.files[0];if(f)await importCheckpoint(await f.text());e.target.value=""});
- $("loadDemo").onclick=async()=>{await loadAssignmentText(JSON.stringify(DEMO_ASSIGNMENT))};
  $("chooseBackupDir").onclick=chooseBackup;$("ambiguity").onchange=async()=>{responseFor(currentItem().post_id).ambiguity_flag=$("ambiguity").checked;await saveState()};
  $("commentToggle").onclick=()=>{$("comment").classList.toggle("hidden");$("commentToggle").textContent=$("comment").classList.contains("hidden")?"+ Adicionar comentário":"- Ocultar comentário";if(!$("comment").classList.contains("hidden"))$("comment").focus()};
  $("comment").oninput=async()=>{responseFor(currentItem().post_id).comment=$("comment").value;await saveState()};
@@ -137,6 +155,5 @@ async function init(){initTheme();db=await openDB();renderEmotionGrid();renderCo
  window.addEventListener("beforeunload",()=>{tickElapsed()});
  await renderPackageProfiles();
  const params=new URLSearchParams(location.search);const aid=params.get("annotator")?.toUpperCase();if(["A1","A2","A3"].includes(aid)){await selectAnnotator(aid);if(params.get("start")==="1")await startSelectedPackage()}
- if(params.get("demo")==="1"){try{await loadAssignmentText(JSON.stringify(DEMO_ASSIGNMENT))}catch(e){console.warn("demo autoload failed",e)}}
 }
 init().catch(e=>{console.error(e);$("saveState").textContent="Erro ao iniciar"});

@@ -4,224 +4,193 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>DANTEStocks - Anotação Humana</title>
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#f3f6fa">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="page-bg" aria-hidden="true"></div>
-
-  <header id="appHeader" class="app-header">
-    <div class="header-main">
+  <header class="app-header">
+    <div class="header-inner">
       <div class="brand-block">
         <div class="brand-mark" aria-hidden="true">D</div>
         <div>
           <div class="brand">DANTEStocks · Anotação humana</div>
-          <div class="sub" id="assignmentMeta">Piloto 404 · referência humana</div>
+          <div class="brand-sub" id="assignmentMeta">Piloto 404 · referência humana</div>
         </div>
       </div>
 
       <div class="header-status">
-        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Alternar tema">☾ Escuro</button>
-        <div class="status-chip progress-chip">
-          <span class="chip-label">Progresso</span>
-          <strong id="progressText" class="chip-value">--</strong>
+        <button id="themeToggle" class="toolbar-btn theme-toggle" type="button" aria-label="Alternar tema">☾ Escuro</button>
+        <div class="status-readout">
+          <span>Progresso</span>
+          <strong id="progressText">--</strong>
         </div>
-        <div class="status-chip save-chip" aria-live="polite">
-          <span class="chip-label">Estado</span>
-          <strong id="saveState" class="chip-value">Sem assignment</strong>
+        <div class="status-readout status-save" aria-live="polite">
+          <span>Estado</span>
+          <strong id="saveState">Sem assignment</strong>
         </div>
       </div>
     </div>
   </header>
 
-  <main class="shell">
-    <section id="onboarding" class="onboarding panel glass-panel">
-      <div class="hero-row">
-        <div>
-          <span class="eyebrow">H02 · local-first</span>
-          <h1>Pacote 01 pronto para anotar</h1>
-          <p class="lead">Os 404 posts do piloto (aprox. 10% do corpus) já estão incorporados à aplicação publicada. Escolha seu perfil de anotação e comece. A aplicação salva automaticamente neste navegador e cria snapshots a cada 10 decisões concluídas.</p>
-        </div>
-        <div class="hero-card">
-          <div class="hero-card-title">Estrutura do piloto</div>
-          <ul>
-            <li>1 post por tela</li>
-            <li>9 labels sempre visíveis</li>
-            <li>confiança obrigatória</li>
-            <li>ambiguidade opcional</li>
-            <li>retomada por checkpoint</li>
-          </ul>
-        </div>
+  <main class="page-shell">
+    <section id="onboarding" class="setup-shell">
+      <div class="setup-heading">
+        <span class="kicker">Piloto humano · Pacote 01</span>
+        <h1>Preparar sessão de anotação</h1>
+        <p>Os 404 posts já estão incorporados. Escolha seu perfil, confirme o backup e inicie ou continue a sessão.</p>
       </div>
 
-      <section id="backupSetupCard" class="backup-setup-card">
-        <div class="backup-icon" aria-hidden="true">↻</div>
-        <div class="backup-copy">
-          <div class="backup-title-row">
+      <div class="setup-grid">
+        <section class="setup-panel backup-panel" id="backupSetupCard">
+          <div class="setup-panel-head">
             <div>
-              <span class="eyebrow">Recomendado antes de começar</span>
-              <h2>Ative o backup automático no computador</h2>
+              <span class="panel-kicker">Backup</span>
+              <h2>Proteja o progresso antes de começar</h2>
             </div>
-            <span id="backupSetupBadge" class="backup-status-badge pending">Não configurado</span>
+            <span id="backupSetupBadge" class="status-badge pending">Não configurado</span>
           </div>
-          <p>O navegador já salva cada mudança localmente. Ao autorizar uma pasta, o app também grava nela um checkpoint automático a cada 10 decisões concluídas.</p>
-          <div class="backup-cta-row">
-            <button id="chooseBackupDir" class="backup-primary-btn">Ativar backup automático →</button>
-            <span class="small" id="backupSupport"></span>
+          <p>O navegador salva cada mudança. Se uma pasta for autorizada, também será criado um checkpoint externo a cada 10 decisões concluídas.</p>
+          <div class="setup-actions">
+            <button id="chooseBackupDir" class="primary-btn">Ativar backup automático</button>
+            <span id="backupSupport" class="support-copy"></span>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <div class="start-block package-start-block">
-        <div class="package-start-head">
-          <div>
-            <span class="eyebrow">Pacote incorporado</span>
-            <h2>Piloto 404 · Pacote 01</h2>
-            <p class="package-desc">404 posts reais · ordem individual por anotador · progresso salvo automaticamente.</p>
+        <section class="setup-panel annotator-panel">
+          <div class="setup-panel-head">
+            <div>
+              <span class="panel-kicker">Sessão</span>
+              <h2>Quem está anotando?</h2>
+            </div>
+            <span class="status-badge neutral">404 posts</span>
           </div>
-          <span class="package-count-badge">404 posts</span>
-        </div>
 
-        <div class="annotator-label">Quem está anotando?</div>
-        <div id="annotatorProfiles" class="annotator-profiles" role="radiogroup" aria-label="Perfil do anotador">
-          <button type="button" class="annotator-profile" data-annotator="A1"><span class="profile-id">A1</span><span class="profile-copy"><strong>Anotador A1</strong><small id="profileStatusA1">Pronto para começar</small></span></button>
-          <button type="button" class="annotator-profile" data-annotator="A2"><span class="profile-id">A2</span><span class="profile-copy"><strong>Anotador A2</strong><small id="profileStatusA2">Pronto para começar</small></span></button>
-          <button type="button" class="annotator-profile" data-annotator="A3"><span class="profile-id">A3</span><span class="profile-copy"><strong>Anotador A3</strong><small id="profileStatusA3">Pronto para começar</small></span></button>
-        </div>
+          <div id="annotatorProfiles" class="annotator-profiles" role="radiogroup" aria-label="Perfil do anotador">
+            <button type="button" class="annotator-profile" data-annotator="A1">
+              <span class="profile-id">A1</span>
+              <span class="profile-copy"><strong>Anotador A1</strong><small id="profileStatusA1">Pronto para começar</small></span>
+            </button>
+            <button type="button" class="annotator-profile" data-annotator="A2">
+              <span class="profile-id">A2</span>
+              <span class="profile-copy"><strong>Anotador A2</strong><small id="profileStatusA2">Pronto para começar</small></span>
+            </button>
+            <button type="button" class="annotator-profile" data-annotator="A3">
+              <span class="profile-id">A3</span>
+              <span class="profile-copy"><strong>Anotador A3</strong><small id="profileStatusA3">Pronto para começar</small></span>
+            </button>
+          </div>
 
-        <div class="start-cta-row">
-          <button id="startPackage" class="primary-btn package-primary" disabled>Escolha A1, A2 ou A3</button>
-          <button id="loadDemo" class="soft-btn">Testar interface com demo</button>
-        </div>
+          <button id="startPackage" class="primary-btn start-btn" disabled>Escolha A1, A2 ou A3</button>
+        </section>
       </div>
 
       <div id="resumeBox" class="resume-box hidden"></div>
 
-      <details class="recovery-panel">
-        <summary>Continuar em outro computador ou recuperar checkpoint</summary>
-        <div class="recovery-content">
-          <p>Use esta opção somente para recuperar uma anotação já iniciada. O próprio checkpoint identifica A1, A2 ou A3; não é necessário abrir nenhum assignment.</p>
-          <label class="file-btn secondary-btn">Importar checkpoint<input id="checkpointInput" type="file" accept="application/json,.json"></label>
-        </div>
-      </details>
+      <div class="setup-footer-row">
+        <details class="recovery-panel">
+          <summary>Continuar em outro computador ou recuperar checkpoint</summary>
+          <div class="recovery-content">
+            <p>Use esta opção somente para recuperar uma sessão já iniciada.</p>
+            <label class="file-btn">Importar checkpoint<input id="checkpointInput" type="file" accept="application/json,.json"></label>
+          </div>
+        </details>
 
-      <div class="onboarding-grid single-guide-grid">
-        <section class="panel-section">
-          <div class="section-topline">
-            <h2>Guias</h2>
-            <span class="mini-badge">PT-BR</span>
-          </div>
-          <p>Abra o guia rápido para decisão ágil e o guideline completo quando precisar comparar categorias ou resolver dúvidas interpretativas.</p>
-          <div class="guide-row">
-            <a href="guides/quick.html" target="_blank" rel="noopener">Guia rápido</a>
-            <a href="guides/full.html" target="_blank" rel="noopener">Guideline completo</a>
-          </div>
-        </section>
+        <div class="guide-links">
+          <span>Guias:</span>
+          <a href="guides/quick.html" target="_blank" rel="noopener">Guia rápido</a>
+          <a href="guides/full.html" target="_blank" rel="noopener">Guideline completo</a>
+        </div>
       </div>
     </section>
 
     <section id="workspace" class="workspace hidden">
-      <section class="main-col">
-        <div class="main-stack glass-panel">
-          <div class="item-topline">
-            <div>
-              <span id="postId" class="eyebrow"></span>
-              <div class="item-title">Post em anotação</div>
-            </div>
-            <button id="deferredBtn" class="pill-link">Pendentes: <span id="deferredCount">0</span></button>
+      <section class="annotation-surface">
+        <div class="task-toolbar">
+          <div class="task-id-block">
+            <strong id="itemPosition">Item --</strong>
+            <span id="postId"></span>
           </div>
-
-          <article id="postText" class="post-card"></article>
-
-          <section id="sourcePanel" class="source-panel hidden" aria-label="Anotação original do DANTEStocks">
-            <div class="source-header">
-              <div>
-                <div class="source-title">Anotação original do DANTEStocks</div>
-                <div class="source-sub">Informação de origem; não limita sua escolha.</div>
-              </div>
-            </div>
-            <div id="sourceLabels" class="source-labels"></div>
-            <div id="sourceNote" class="source-note"></div>
-          </section>
-
-          <section class="question-block">
-            <h2 class="question">Qual é a emoção predominante comunicada?</h2>
-            <p class="question-sub">Escolha uma única classe para o post como unidade discursiva. As opções permanecem sempre abertas, mesmo quando houver anotação original visível.</p>
-          </section>
-
-          <div id="emotionGrid" class="emotion-grid" role="radiogroup" aria-label="Emoção predominante"></div>
-
-          <section class="decision-meta panel-inner">
-            <div class="meta-row">
-              <div class="meta-block">
-                <div class="field-title">Confiança na decisão</div>
-                <div id="confidenceControl" class="segmented" role="radiogroup" aria-label="Confiança"></div>
-              </div>
-              <label class="ambiguity card-toggle"><input id="ambiguity" type="checkbox"><span>Caso especialmente ambíguo</span></label>
-            </div>
-
-            <button id="commentToggle" class="inline-link">+ Adicionar comentário</button>
-            <textarea id="comment" class="comment hidden" maxlength="1000" placeholder="Opcional: regra ausente, voz, ironia, termo financeiro, problema textual..."></textarea>
-          </section>
+          <div class="task-tools">
+            <button id="quickGuideBtn" class="toolbar-btn">Guia rápido</button>
+            <button id="fullGuideBtn" class="toolbar-btn">Guideline</button>
+            <button id="exportCheckpoint" class="toolbar-btn">Checkpoint</button>
+            <button id="deferredBtn" class="toolbar-btn">Pendentes <span id="deferredCount">0</span></button>
+          </div>
         </div>
 
-        <div class="actions sticky-actions">
-          <button id="deferItem" class="soft-btn">Decidir depois</button>
-          <div class="action-right">
-            <button id="prevItem" class="soft-btn">Anterior</button>
-            <button id="saveNext" class="primary-btn save-next-btn" disabled>Salvar e próximo →</button>
+        <section class="reading-zone" aria-labelledby="readingLabel">
+          <div id="readingLabel" class="reading-label">POST PARA CLASSIFICAR</div>
+          <article id="postText" class="post-text"></article>
+        </section>
+
+        <section id="sourcePanel" class="source-panel hidden" aria-label="Anotação original do DANTEStocks">
+          <div class="source-copy">
+            <strong>Anotação original do DANTEStocks</strong>
+            <span>Informação de origem; não limita sua escolha.</span>
           </div>
+          <div id="sourceLabels" class="source-labels"></div>
+          <div id="sourceNote" class="source-note"></div>
+        </section>
+
+        <section class="question-block">
+          <div>
+            <span class="question-kicker">DECISÃO PRINCIPAL</span>
+            <h2 class="question">Qual é a emoção predominante comunicada?</h2>
+          </div>
+          <p class="question-sub">Escolha uma única classe para o post como unidade discursiva.</p>
+        </section>
+
+        <div id="emotionGrid" class="emotion-grid" role="radiogroup" aria-label="Emoção predominante"></div>
+
+        <section id="dynamicHint" class="decision-hint is-empty" aria-live="polite">
+          <div class="hint-empty">Selecione uma categoria. A checagem comparativa aparecerá aqui.</div>
+        </section>
+
+        <section class="decision-meta">
+          <div class="confidence-block">
+            <div class="meta-heading">
+              <strong>Confiança</strong>
+              <span>Média vem selecionada por padrão.</span>
+            </div>
+            <div id="confidenceControl" class="segmented" role="radiogroup" aria-label="Confiança"></div>
+          </div>
+
+          <label class="ambiguity-toggle">
+            <input id="ambiguity" type="checkbox">
+            <span>Caso especialmente ambíguo</span>
+          </label>
+
+          <button id="commentToggle" class="text-btn">+ Adicionar comentário</button>
+          <textarea id="comment" class="comment hidden" maxlength="1000" placeholder="Opcional: regra ausente, voz, ironia, termo financeiro, problema textual..."></textarea>
+        </section>
+
+        <div class="shortcut-strip" aria-label="Atalhos de teclado">
+          <span><kbd>1-9</kbd> labels</span>
+          <span><kbd>H/M/L</kbd> confiança</span>
+          <span><kbd>A</kbd> ambiguidade</span>
+          <span><kbd>Enter</kbd> salvar</span>
+          <span id="snapshotStatus">Snapshots automáticos a cada 10 concluídos.</span>
         </div>
       </section>
 
-      <aside class="help-col">
-        <div class="help-shell glass-panel">
-          <div class="aside-top">
-            <span class="eyebrow">Apoio à decisão</span>
-            <div class="aside-title">Pista contextual</div>
-          </div>
-
-          <div id="dynamicHint" class="hint-card">
-            <h3>Escolha uma label</h3>
-            <p>A pista aparecerá aqui sem revelar nenhuma resposta anterior.</p>
-          </div>
-
-          <div class="help-actions">
-            <button id="quickGuideBtn" class="soft-btn">Guia rápido</button>
-            <button id="fullGuideBtn" class="soft-btn">Guideline completo</button>
-            <button id="exportCheckpoint" class="soft-btn">Exportar checkpoint</button>
-          </div>
-
-          <div class="status-stack">
-            <section class="status-card">
-              <div class="field-title">Backups</div>
-              <div id="snapshotStatus" class="small">Snapshots automáticos a cada 10 concluídos.</div>
-            </section>
-
-            <section class="status-card">
-              <div class="field-title">Atalhos</div>
-              <div class="shortcut-grid">
-                <div><kbd>1-9</kbd><span>labels</span></div>
-                <div><kbd>H/M/L</kbd><span>confiança</span></div>
-                <div><kbd>A</kbd><span>ambiguidade</span></div>
-                <div><kbd>Enter</kbd><span>salvar</span></div>
-              </div>
-            </section>
-          </div>
+      <div class="action-bar">
+        <button id="deferItem" class="secondary-btn">Decidir depois</button>
+        <div class="action-right">
+          <button id="prevItem" class="secondary-btn">Anterior</button>
+          <button id="saveNext" class="primary-btn save-next-btn" disabled>Salvar e próximo →</button>
         </div>
-      </aside>
+      </div>
     </section>
 
-    <section id="finish" class="finish panel glass-panel hidden">
-      <span class="eyebrow">Coleta concluída</span>
+    <section id="finish" class="finish-shell hidden">
+      <span class="kicker">Coleta concluída</span>
       <h1>Assignment concluído</h1>
-      <p id="finishSummary" class="lead"></p>
+      <p id="finishSummary"></p>
       <div class="finish-actions">
         <button id="downloadJSON" class="primary-btn">Baixar JSON final</button>
-        <button id="downloadCSV" class="soft-btn">Baixar CSV</button>
-        <button id="downloadSHA" class="soft-btn">Baixar SHA-256</button>
+        <button id="downloadCSV" class="secondary-btn">Baixar CSV</button>
+        <button id="downloadSHA" class="secondary-btn">Baixar SHA-256</button>
       </div>
-      <p class="small">A distribuição de emoções não é mostrada durante a coleta.</p>
     </section>
   </main>
 
@@ -229,7 +198,7 @@
     <div class="modal-shell">
       <div class="modal-head">
         <strong id="guideTitle">Guia</strong>
-        <button id="closeGuide" class="soft-btn">Fechar</button>
+        <button id="closeGuide" class="secondary-btn">Fechar</button>
       </div>
       <iframe id="guideFrame" title="Guia de anotação"></iframe>
     </div>
