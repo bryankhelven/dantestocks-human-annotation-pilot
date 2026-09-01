@@ -1,5 +1,5 @@
 "use strict";
-const APP_VERSION="0.6.0";
+const APP_VERSION="0.7.0";
 const DB_NAME="dantestocks-human-annotation-v06";
 const DB_VERSION=1;
 const STORE_STATE="state", STORE_SNAP="snapshots", STORE_HANDLES="handles";
@@ -37,7 +37,13 @@ async function selectAnnotator(id,silent=false){if(!["A1","A2","A3"].includes(id
 async function startSelectedPackage(){if(!selectedAnnotator)return;const raw=embeddedRawFor(selectedAnnotator);if(!raw)return;await loadAssignmentText(raw)}
 
 async function saveState(){if(!state||!assignment)return;state.currentIndex=currentIndex;state.last_updated_at=now();await idbPut(STORE_STATE,assignment.assignment_id,state);$("saveState").textContent="Salvo localmente ✓"}
-function responseFor(postId){if(!state.responses[postId])state.responses[postId]={post_id:postId,primary_emotion:null,confidence:null,ambiguity_flag:false,comment:"",first_opened_at:null,first_saved_at:null,last_saved_at:null,elapsed_seconds:0,revision_count:0};return state.responses[postId]}
+function responseFor(postId){
+  if(!state.responses[postId])state.responses[postId]={post_id:postId,primary_emotion:null,confidence:null,confidence_defaulted:false,confidence_edited:false,ambiguity_flag:false,comment:"",first_opened_at:null,first_saved_at:null,last_saved_at:null,elapsed_seconds:0,revision_count:0};
+  const r=state.responses[postId];
+  if(!("confidence_defaulted" in r))r.confidence_defaulted=false;
+  if(!("confidence_edited" in r))r.confidence_edited=false;
+  return r;
+}
 function completedCount(){return assignment.items.reduce((n,it)=>{const r=state.responses[it.post_id];return n+(r&&r.primary_emotion&&r.confidence?1:0)},0)}
 function deferredCount(){return Object.values(state.deferred||{}).filter(Boolean).length}
 function allComplete(){return completedCount()===assignment.items.length}
@@ -46,19 +52,19 @@ function renderConfidence(){const el=$("confidenceControl");el.innerHTML="";CONF
 function tickElapsed(){if(!assignment||$("workspace").classList.contains("hidden"))return;const item=assignment.items[currentIndex];if(!item)return;const r=responseFor(item.post_id);const t=Date.now();r.elapsed_seconds+=(t-lastTick)/1000;lastTick=t}
 function startTimer(){clearInterval(timer);lastTick=Date.now();timer=setInterval(()=>{tickElapsed();saveState().catch(()=>{})},5000)}
 function currentItem(){return assignment.items[currentIndex]}
-function renderCurrent(){if(!assignment)return;if(allComplete()){showFinish();return}const item=currentItem();if(!item)return;const r=responseFor(item.post_id);if(!r.first_opened_at)r.first_opened_at=now();itemOpenedAt=Date.now();lastTick=Date.now();$("postId").textContent=item.post_id;$("postText").textContent=item.text;
+function renderCurrent(){if(!assignment)return;if(allComplete()){showFinish();return}const item=currentItem();if(!item)return;const r=responseFor(item.post_id);if(!r.first_opened_at)r.first_opened_at=now();if(!r.confidence){r.confidence="MEDIUM";r.confidence_defaulted=true;r.confidence_edited=false;}itemOpenedAt=Date.now();lastTick=Date.now();$("postId").textContent=item.post_id;$("postText").textContent=item.text;
   const sp=$("sourcePanel"), sl=$("sourceLabels"), sn=$("sourceNote");sl.innerHTML="";sn.textContent="";
-  if(item.display_source_annotation&&item.source_annotation){sp.classList.remove("hidden");const labs=item.source_annotation.labels||[];if(labs.length){labs.forEach(code=>{const e=EMOTIONS.find(x=>x.code===code);const chip=document.createElement("span");chip.className="source-chip";chip.textContent=e?`${e.name} · ${code}`:code;sl.appendChild(chip)})}else{const chip=document.createElement("span");chip.className="source-chip";chip.textContent="Sem emoção original listada";sl.appendChild(chip)}sn.textContent=item.source_annotation.note||""}else sp.classList.add("hidden");
+  if(item.display_source_annotation&&item.source_annotation){sp.classList.remove("hidden");const labs=item.source_annotation.labels||[];if(labs.length){labs.forEach(code=>{const e=EMOTIONS.find(x=>x.code===code);const chip=document.createElement("span");chip.className="source-chip";chip.textContent=e?`${e.name} · ${code}`:code;sl.appendChild(chip)})}else{const chip=document.createElement("span");chip.className="source-chip";chip.textContent="Sem emoção original listada";sl.appendChild(chip)}const note=item.source_annotation.note||"";sn.textContent=(note&&note!=="Anotação original do DANTEStocks; informação de origem, não limita a escolha.")?note:""}else sp.classList.add("hidden");
   document.querySelectorAll('input[name="emotion"]').forEach(inp=>{inp.checked=inp.value===r.primary_emotion;inp.closest('.emotion-card').classList.toggle('selected',inp.checked)});
   document.querySelectorAll('input[name="confidence"]').forEach(inp=>{inp.checked=inp.value===r.confidence;inp.closest('.segment').classList.toggle('selected',inp.checked)});
-  $("ambiguity").checked=!!r.ambiguity_flag;$("comment").value=r.comment||"";$("comment").classList.toggle("hidden",!(r.comment&&r.comment.length));$("commentToggle").textContent=$("comment").classList.contains("hidden")?"+ Adicionar comentário":"− Ocultar comentário";
+  $("ambiguity").checked=!!r.ambiguity_flag;$("comment").value=r.comment||"";$("comment").classList.toggle("hidden",!(r.comment&&r.comment.length));$("commentToggle").textContent=$("comment").classList.contains("hidden")?"+ Adicionar comentário":"- Ocultar comentário";
   updateHint(r.primary_emotion);updateControls();updateHeader();saveState().catch(()=>{});startTimer();
 }
 function updateHint(code){const box=$("dynamicHint");const e=EMOTIONS.find(x=>x.code===code);if(!e){box.innerHTML="<h3>Escolha uma label</h3><p>A pista aparecerá aqui sem revelar nenhuma resposta anterior.</p>";return}box.innerHTML=`<h3>${escapeHtml(e.name)} <span class="emotion-code">${e.code}</span></h3><p><strong>Centro:</strong> ${escapeHtml(e.center)}</p><p><strong>Compare com:</strong> ${escapeHtml(e.compare)}</p><p><strong>Não use só porque:</strong> ${escapeHtml(e.not)}</p>`}
 function updateControls(){const r=responseFor(currentItem().post_id);$("saveNext").disabled=!(r.primary_emotion&&r.confidence);$("prevItem").disabled=currentIndex===0;$("deferredCount").textContent=deferredCount()}
 function updateHeader(){const done=completedCount();$("progressText").textContent=`${done} / ${assignment.items.length}`;$("assignmentMeta").textContent=`${assignment.annotator_id} · Guideline ${assignment.guideline_version} · App ${APP_VERSION}`;$("deferredCount").textContent=deferredCount()}
 async function setEmotion(code){tickElapsed();const r=responseFor(currentItem().post_id);if(r.primary_emotion&&r.primary_emotion!==code)r.revision_count++;r.primary_emotion=code;r.last_saved_at=now();document.querySelectorAll('.emotion-card').forEach(card=>{const inp=card.querySelector('input');card.classList.toggle('selected',inp.value===code);inp.checked=inp.value===code});updateHint(code);updateControls();$("saveState").textContent="Salvando…";await saveState()}
-async function setConfidence(code){tickElapsed();const r=responseFor(currentItem().post_id);if(r.confidence&&r.confidence!==code)r.revision_count++;r.confidence=code;r.last_saved_at=now();document.querySelectorAll('.segment').forEach(l=>l.classList.toggle('selected',l.querySelector('input').value===code));updateControls();$("saveState").textContent="Salvando…";await saveState()}
+async function setConfidence(code){tickElapsed();const r=responseFor(currentItem().post_id);if(r.confidence&&r.confidence!==code)r.revision_count++;r.confidence=code;r.confidence_edited=true;r.last_saved_at=now();document.querySelectorAll('.segment').forEach(l=>l.classList.toggle('selected',l.querySelector('input').value===code));updateControls();$("saveState").textContent="Salvando…";await saveState()}
 async function persistCurrent(finalSave=false){tickElapsed();const r=responseFor(currentItem().post_id);r.ambiguity_flag=$("ambiguity").checked;r.comment=$("comment").value.trim();r.last_saved_at=now();if(finalSave&&!r.first_saved_at)r.first_saved_at=now();await saveState();if(finalSave)await maybeSnapshot()}
 async function maybeSnapshot(){const done=completedCount();if(done>=10&&done%10===0&&done>lastSnapshotCompleted){await createSnapshot(done,true);lastSnapshotCompleted=done;state.last_snapshot_completed=done;await saveState()}}
 async function createSnapshot(done,auto=false){const snap=await buildExportPayload();snap.snapshot={completed_count:done,created_at:now(),automatic:auto};const name=`${assignment.annotator_id}_PILOT_CHECKPOINT_${String(done).padStart(4,"0")}.json`;await idbPut(STORE_SNAP,`${assignment.assignment_id}:${String(done).padStart(4,"0")}`,snap);$("snapshotStatus").textContent=`Snapshot ${done} salvo automaticamente no navegador.`;if(externalDirHandle){try{if(await verifyPermission(externalDirHandle,true)){const fh=await externalDirHandle.getFileHandle(name,{create:true});const w=await fh.createWritable();await w.write(JSON.stringify(snap,null,2));await w.close();$("snapshotStatus").textContent=`Snapshot ${done} salvo no navegador e na pasta de backup.`}}catch(e){console.warn(e);$("snapshotStatus").textContent=`Snapshot ${done} salvo no navegador; backup externo indisponível.`}}}
@@ -72,9 +78,9 @@ function renderBackupSetupStatus(){
  badge.textContent="Não configurado";badge.className="backup-status-badge pending";btn.textContent="Ativar backup automático →";btn.disabled=false;$("backupSupport").textContent="Escolha uma pasta uma vez; depois o backup é automático.";
 }
 async function chooseBackup(){if(!window.showDirectoryPicker){renderBackupSetupStatus();return}try{externalDirHandle=await window.showDirectoryPicker({mode:"readwrite"});await idbPut(STORE_HANDLES,"backupDir",externalDirHandle);renderBackupSetupStatus()}catch(e){if(e.name!=="AbortError"){$("backupSupport").textContent="Não foi possível ativar a pasta; snapshots internos continuam ativos."}renderBackupSetupStatus()}}
-async function buildExportPayload(){return {format:"DANTEStocks_HUMAN_PILOT_RESPONSE_v0.2",assignment_id:assignment.assignment_id,assignment_sha256:assignmentHash,annotator_id:assignment.annotator_id,pilot_version:assignment.pilot_version,guideline_version:assignment.guideline_version,webapp_version:APP_VERSION,exported_at:now(),responses:assignment.items.map((it,i)=>{const r=responseFor(it.post_id);return {post_id:it.post_id,random_order:i+1,primary_emotion:r.primary_emotion,confidence:r.confidence,ambiguity_flag:!!r.ambiguity_flag,comment:r.comment||"",first_opened_at:r.first_opened_at,first_saved_at:r.first_saved_at,last_saved_at:r.last_saved_at,elapsed_seconds:Math.round((r.elapsed_seconds||0)*10)/10,revision_count:r.revision_count||0}})}}
+async function buildExportPayload(){return {format:"DANTEStocks_HUMAN_PILOT_RESPONSE_v0.3",assignment_id:assignment.assignment_id,assignment_sha256:assignmentHash,annotator_id:assignment.annotator_id,pilot_version:assignment.pilot_version,guideline_version:assignment.guideline_version,webapp_version:APP_VERSION,exported_at:now(),responses:assignment.items.map((it,i)=>{const r=responseFor(it.post_id);return {post_id:it.post_id,random_order:i+1,primary_emotion:r.primary_emotion,confidence:r.confidence,confidence_defaulted:!!r.confidence_defaulted,confidence_edited:!!r.confidence_edited,ambiguity_flag:!!r.ambiguity_flag,comment:r.comment||"",first_opened_at:r.first_opened_at,first_saved_at:r.first_saved_at,last_saved_at:r.last_saved_at,elapsed_seconds:Math.round((r.elapsed_seconds||0)*10)/10,revision_count:r.revision_count||0}})}}
 function csvEscape(v){const s=String(v??"");return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s}
-async function buildCSV(){const p=await buildExportPayload();const cols=["assignment_id","annotator_id","post_id","random_order","primary_emotion","confidence","ambiguity_flag","comment","guideline_version","webapp_version","first_opened_at","first_saved_at","last_saved_at","elapsed_seconds","revision_count"];const rows=[cols.join(",")];p.responses.forEach(r=>rows.push(cols.map(c=>csvEscape(c in r?r[c]:({assignment_id:p.assignment_id,annotator_id:p.annotator_id,guideline_version:p.guideline_version,webapp_version:p.webapp_version}[c]??""))).join(",")));return rows.join("\n")+"\n"}
+async function buildCSV(){const p=await buildExportPayload();const cols=["assignment_id","annotator_id","post_id","random_order","primary_emotion","confidence","confidence_defaulted","confidence_edited","ambiguity_flag","comment","guideline_version","webapp_version","first_opened_at","first_saved_at","last_saved_at","elapsed_seconds","revision_count"];const rows=[cols.join(",")];p.responses.forEach(r=>rows.push(cols.map(c=>csvEscape(c in r?r[c]:({assignment_id:p.assignment_id,annotator_id:p.annotator_id,guideline_version:p.guideline_version,webapp_version:p.webapp_version}[c]??""))).join(",")));return rows.join("\n")+"\n"}
 function downloadText(filename,text,type="text/plain"){const b=new Blob([text],{type});const u=URL.createObjectURL(b);const a=document.createElement("a");a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 async function exportCheckpointManual(){if(!assignment)return;await persistCurrent(false);const p=await buildExportPayload();p.snapshot={completed_count:completedCount(),created_at:now(),automatic:false};downloadText(`${assignment.annotator_id}_PILOT_CHECKPOINT_${String(completedCount()).padStart(4,"0")}.json`,JSON.stringify(p,null,2),"application/json")}
 async function goNext(){await persistCurrent(true);const doneBefore=completedCount();delete state.deferred[currentItem().post_id];if(allComplete()){showFinish();return}let idx=currentIndex+1;while(idx<assignment.items.length){const r=state.responses[assignment.items[idx].post_id];if(!(r&&r.primary_emotion&&r.confidence)){currentIndex=idx;renderCurrent();return}idx++}const pend=assignment.items.findIndex(it=>{const r=state.responses[it.post_id];return !(r&&r.primary_emotion&&r.confidence)});currentIndex=pend>=0?pend:0;renderCurrent()}
@@ -89,8 +95,24 @@ async function importCheckpoint(text){let cp;try{cp=JSON.parse(text)}catch(e){al
  if(!assignment){alert("Não foi possível identificar A1, A2 ou A3 a partir deste checkpoint.");return}
  if(cp.assignment_id!==assignment.assignment_id||cp.assignment_sha256!==assignmentHash){alert("Checkpoint não pertence ao Pacote 01 selecionado ou o hash não coincide.");return}
  cp.responses.forEach(r=>{state.responses[r.post_id]={...responseFor(r.post_id),...r}});state.last_updated_at=now();await saveState();renderCurrent();alert("Checkpoint recuperado com sucesso.")}
-function openGuide(kind){$("guideTitle").textContent=kind==="quick"?"Guia rápido":"Guideline completo";$("guideFrame").src=kind==="quick"?"guides/quick.html":"guides/full.html";$("guideModal").classList.remove("hidden")}
-async function init(){db=await openDB();renderEmotionGrid();renderConfidence();externalDirHandle=await idbGet(STORE_HANDLES,"backupDir");renderBackupSetupStatus();
+function openGuide(kind){const frame=$("guideFrame");$("guideTitle").textContent=kind==="quick"?"Guia rápido":"Guideline completo";frame.onload=()=>{try{frame.contentDocument.documentElement.dataset.theme=document.documentElement.dataset.theme||"light"}catch(e){}};frame.src=kind==="quick"?"guides/quick.html":"guides/full.html";$("guideModal").classList.remove("hidden")}
+function applyTheme(theme){
+  const resolved=theme==="dark"?"dark":"light";
+  document.documentElement.dataset.theme=resolved;
+  localStorage.setItem("dantestocks-theme",resolved);
+  const btn=$("themeToggle");
+  if(btn){btn.textContent=resolved==="dark"?"☀ Claro":"☾ Escuro";btn.setAttribute("aria-label",resolved==="dark"?"Ativar modo claro":"Ativar modo escuro");}
+  const frame=$("guideFrame");
+  try{if(frame?.contentDocument?.documentElement)frame.contentDocument.documentElement.dataset.theme=resolved}catch(e){}
+}
+function initTheme(){
+  const saved=localStorage.getItem("dantestocks-theme");
+  const initial=saved||(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+  applyTheme(initial);
+}
+function toggleTheme(){applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark");}
+
+async function init(){initTheme();db=await openDB();renderEmotionGrid();renderConfidence();externalDirHandle=await idbGet(STORE_HANDLES,"backupDir");renderBackupSetupStatus();
  if(!PILOT_PACKAGE||PILOT_PACKAGE.generated===false||!PILOT_PACKAGE.assignments_raw||Object.keys(PILOT_PACKAGE.assignments_raw).length!==3){
    document.querySelectorAll('.annotator-profile').forEach(btn=>btn.disabled=true);
    const start=$('startPackage'); if(start){start.disabled=true;start.textContent='Pilot404 ainda não materializado';}
@@ -99,10 +121,11 @@ async function init(){db=await openDB();renderEmotionGrid();renderConfidence();e
  }
  document.querySelectorAll('.annotator-profile').forEach(btn=>btn.addEventListener('click',()=>selectAnnotator(btn.dataset.annotator)));
  $("startPackage").onclick=startSelectedPackage;
+ if($("themeToggle"))$("themeToggle").onclick=toggleTheme;
  $("checkpointInput").addEventListener("change",async e=>{const f=e.target.files[0];if(f)await importCheckpoint(await f.text());e.target.value=""});
  $("loadDemo").onclick=async()=>{await loadAssignmentText(JSON.stringify(DEMO_ASSIGNMENT))};
  $("chooseBackupDir").onclick=chooseBackup;$("ambiguity").onchange=async()=>{responseFor(currentItem().post_id).ambiguity_flag=$("ambiguity").checked;await saveState()};
- $("commentToggle").onclick=()=>{$("comment").classList.toggle("hidden");$("commentToggle").textContent=$("comment").classList.contains("hidden")?"+ Adicionar comentário":"− Ocultar comentário";if(!$("comment").classList.contains("hidden"))$("comment").focus()};
+ $("commentToggle").onclick=()=>{$("comment").classList.toggle("hidden");$("commentToggle").textContent=$("comment").classList.contains("hidden")?"+ Adicionar comentário":"- Ocultar comentário";if(!$("comment").classList.contains("hidden"))$("comment").focus()};
  $("comment").oninput=async()=>{responseFor(currentItem().post_id).comment=$("comment").value;await saveState()};
  $("saveNext").onclick=goNext;$("deferItem").onclick=deferCurrent;$("prevItem").onclick=async()=>{await persistCurrent(false);if(currentIndex>0){currentIndex--;renderCurrent()}};
  $("deferredBtn").onclick=async()=>{const idx=assignment.items.findIndex(it=>state.deferred[it.post_id]);if(idx>=0){await persistCurrent(false);currentIndex=idx;renderCurrent()}};

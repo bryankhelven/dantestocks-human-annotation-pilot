@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>DANTEStocks — Anotação Humana</title>
+  <title>DANTEStocks - Anotação Humana</title>
   <meta name="theme-color" content="#111827">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -21,9 +21,10 @@
       </div>
 
       <div class="header-status">
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Alternar tema">☾ Escuro</button>
         <div class="status-chip progress-chip">
           <span class="chip-label">Progresso</span>
-          <strong id="progressText" class="chip-value">—</strong>
+          <strong id="progressText" class="chip-value">--</strong>
         </div>
         <div class="status-chip save-chip" aria-live="polite">
           <span class="chip-label">Estado</span>
@@ -138,7 +139,6 @@
                 <div class="source-title">Anotação original do DANTEStocks</div>
                 <div class="source-sub">Informação de origem; não limita sua escolha.</div>
               </div>
-              <span class="mini-badge">source-aware</span>
             </div>
             <div id="sourceLabels" class="source-labels"></div>
             <div id="sourceNote" class="source-note"></div>
@@ -169,7 +169,7 @@
           <button id="deferItem" class="soft-btn">Decidir depois</button>
           <div class="action-right">
             <button id="prevItem" class="soft-btn">Anterior</button>
-            <button id="saveNext" class="primary-btn" disabled>Salvar e próximo →</button>
+            <button id="saveNext" class="primary-btn save-next-btn" disabled>Salvar e próximo →</button>
           </div>
         </div>
       </section>
@@ -201,7 +201,7 @@
             <section class="status-card">
               <div class="field-title">Atalhos</div>
               <div class="shortcut-grid">
-                <div><kbd>1–9</kbd><span>labels</span></div>
+                <div><kbd>1-9</kbd><span>labels</span></div>
                 <div><kbd>H/M/L</kbd><span>confiança</span></div>
                 <div><kbd>A</kbd><span>ambiguidade</span></div>
                 <div><kbd>Enter</kbd><span>salvar</span></div>

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "DANTEStocks Human Pilot Response v0.2",
+  "title": "DANTEStocks Human Pilot Response v0.3",
   "type": "object",
   "required": [
     "assignment_id",
@@ -91,6 +91,12 @@
           "revision_count": {
             "type": "integer",
             "minimum": 0
+          },
+          "confidence_defaulted": {
+            "type": "boolean"
+          },
+          "confidence_edited": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
