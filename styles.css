@@ -251,3 +251,18 @@ html[data-theme="dark"] .action-bar{background:rgba(15,26,42,.96)}
   .secondary-btn,.primary-btn{width:100%}
   .task-id-block{align-items:flex-start;flex-direction:column;gap:3px}
 }
+
+
+/* Protocol v1.0 - source provenance is structurally present on every task. */
+.source-panel.is-unavailable{
+  background:var(--layer-1);
+  border-color:var(--border);
+}
+.source-panel.is-unavailable .source-copy strong{color:var(--text);}
+.source-panel.is-unavailable .source-copy span{color:var(--text-2);}
+.source-chip-empty{
+  background:var(--layer-2);
+  color:var(--text-2);
+  border-style:dashed;
+  font-weight:650;
+}
