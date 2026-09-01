@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DANTEStocks Human Pilot Response v0.2",
+  "type": "object",
+  "required": [
+    "assignment_id",
+    "assignment_sha256",
+    "annotator_id",
+    "webapp_version",
+    "guideline_version",
+    "responses"
+  ],
+  "properties": {
+    "assignment_id": {
+      "type": "string"
+    },
+    "assignment_sha256": {
+      "type": "string"
+    },
+    "annotator_id": {
+      "type": "string"
+    },
+    "webapp_version": {
+      "type": "string"
+    },
+    "guideline_version": {
+      "type": "string"
+    },
+    "responses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "post_id",
+          "primary_emotion",
+          "confidence",
+          "ambiguity_flag"
+        ],
+        "properties": {
+          "post_id": {
+            "type": "string"
+          },
+          "primary_emotion": {
+            "enum": [
+              "trust",
+              "disgust",
+              "joy",
+              "sadness",
+              "anticipation",
+              "surprise",
+              "anger",
+              "fear",
+              "neutral"
+            ]
+          },
+          "confidence": {
+            "enum": [
+              "HIGH",
+              "MEDIUM",
+              "LOW"
+            ]
+          },
+          "ambiguity_flag": {
+            "type": "boolean"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "first_opened_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "first_saved_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "last_saved_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "elapsed_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "revision_count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": true
+}

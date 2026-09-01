@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DANTEStocks Human Pilot Assignment v0.2",
+  "type": "object",
+  "required": [
+    "assignment_id",
+    "annotator_id",
+    "pilot_version",
+    "guideline_version",
+    "webapp_min_version",
+    "items"
+  ],
+  "properties": {
+    "assignment_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "annotator_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pilot_version": {
+      "type": "string"
+    },
+    "guideline_version": {
+      "type": "string"
+    },
+    "webapp_min_version": {
+      "type": "string"
+    },
+    "randomization_seed": {
+      "type": [
+        "string",
+        "number"
+      ]
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "post_id",
+          "text",
+          "display_source_annotation"
+        ],
+        "properties": {
+          "post_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "text": {
+            "type": "string"
+          },
+          "display_source_annotation": {
+            "type": "boolean"
+          },
+          "source_annotation": {
+            "type": "object",
+            "properties": {
+              "labels": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "trust",
+                    "disgust",
+                    "joy",
+                    "sadness",
+                    "anticipation",
+                    "surprise",
+                    "anger",
+                    "fear",
+                    "neutral"
+                  ]
+                }
+              },
+              "note": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "display_source_annotation": {
+                  "const": false
+                }
+              }
+            },
+            "then": {
+              "not": {
+                "required": [
+                  "source_annotation"
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "display_source_annotation": {
+                  "const": true
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "source_annotation"
+              ]
+            }
+          }
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

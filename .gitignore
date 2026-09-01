@@ -1,0 +1,7 @@
+.DS_Store
+Thumbs.db
+*.log
+coordinator_private/
+source/
+.build/
+*_MASTER_MANIFEST_INTERNAL.csv

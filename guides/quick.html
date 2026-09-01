@@ -1,0 +1,292 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guia rápido de anotação</title><style>
+:root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#191c20;background:#fff}
+body{max-width:900px;margin:0 auto;padding:28px 24px 70px;line-height:1.6}h1{font-size:1.85rem}h2{margin-top:2.2rem;font-size:1.35rem;border-top:1px solid #e4e6ea;padding-top:1.2rem}h3{font-size:1.08rem;margin-top:1.6rem}code{background:#f3f4f6;padding:.12rem .3rem;border-radius:4px}pre{background:#f6f7f8;padding:14px;border-radius:8px;overflow:auto}blockquote{margin:1rem 0;padding:.8rem 1rem;border-left:3px solid #626a75;background:#f7f8f9}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;margin:1rem 0}th,td{text-align:left;padding:8px 10px;border-bottom:1px solid #dfe2e6}th{background:#f7f8f9}a{color:inherit}.top{position:sticky;top:0;background:rgba(255,255,255,.96);padding:8px 0;border-bottom:1px solid #e3e5e8;margin-bottom:18px}.top button{font:inherit;padding:7px 10px;border:1px solid #cdd1d7;border-radius:7px;background:#fff;cursor:pointer}
+</style></head><body><div class="top"><button onclick="window.close()">Fechar</button></div><h1>DANTEStocks-Dominant — Guia Rápido de Anotação Humana</h1>
+<h2>TL;DR de decisão — Piloto v0.2</h2>
+
+<p><strong>Use este guia para decidir rápido.</strong></p>
+<p>Se o caso continuar difícil, consulte o <strong>Guideline Completo em PT-BR — Piloto v0.2</strong>.</p>
+
+<p>---</p>
+
+<h2>1. Pergunta central</h2>
+
+<p>Para cada post, escolha <strong>uma única emoção predominante</strong>:</p>
+
+<p><code>trust</code> · <code>disgust</code> · <code>joy</code> · <code>sadness</code> · <code>anticipation</code> · <code>surprise</code> · <code>anger</code> · <code>fear</code> · <code>neutral</code></p>
+
+<p>Pergunte:</p>
+
+<blockquote><strong>Qual único afeto primário comunicado melhor caracteriza o post como uma unidade discursiva?</strong></blockquote>
+
+<h3>Muito importante</h3>
+
+<p>Você está classificando o <strong>afeto comunicado pelo post</strong>, não diagnosticando o estado psicológico privado de quem escreveu.</p>
+
+<p>A unidade é o <strong>post inteiro</strong>.</p>
+
+<p>---</p>
+
+<h2>2. Regra de decisão em 20 segundos</h2>
+
+<h3>Passo 1 — Há afeto comunicativamente defensável?</h3>
+
+<p>Se <strong>não</strong>, escolha <code>neutral</code>.</p>
+
+<p>Não transforme fatos financeiros em emoção automaticamente.</p>
+
+<ul>
+<li>alta de preço ≠ <code>joy</code></li>
+<li>queda de preço ≠ <code>sadness</code></li>
+<li>risco técnico ≠ <code>fear</code></li>
+<li>previsão futura ≠ <code>anticipation</code></li>
+<li>recomendação citada ≠ <code>trust</code></li>
+</ul>
+
+<h3>Passo 2 — Se há afeto, qual é o centro?</h3>
+
+<div class="table-wrap"><table><thead><tr><th>Se o centro é...</th><th>Escolha</th></tr></thead><tbody>
+<tr><td>confiança, aprovação, segurança, recomendação</td><td><code>trust</code></td></tr>
+<tr><td>rejeição, desprezo, aversão</td><td><code>disgust</code></td></tr>
+<tr><td>prazer, satisfação, comemoração</td><td><code>joy</code></td></tr>
+<tr><td>perda, decepção, frustração, lamento</td><td><code>sadness</code></td></tr>
+<tr><td>expectativa, curiosidade, prontidão, olhar para o futuro</td><td><code>anticipation</code></td></tr>
+<tr><td>inesperado, espanto, quebra de expectativa</td><td><code>surprise</code></td></tr>
+<tr><td>culpa, ataque, hostilidade, indignação</td><td><code>anger</code></td></tr>
+<tr><td>ameaça, preocupação, apreensão, risco temido</td><td><code>fear</code></td></tr>
+<tr><td>nenhum dos anteriores é defensável como predominante</td><td><code>neutral</code></td></tr>
+</tbody></table></div>
+
+<h3>Passo 3 — Escolha uma só</h3>
+
+<p>Mesmo se houver mais de uma emoção plausível, escolha a <strong>melhor</strong>.</p>
+
+<p>Se estiver difícil:</p>
+<ul>
+<li>reduza a confiança para <code>MEDIUM</code> ou <code>LOW</code>;</li>
+<li>marque <code>ambiguity_flag</code>;</li>
+<li>use comentário opcional;</li>
+<li><strong>não use neutral só porque está em dúvida</strong>.</li>
+</ul>
+
+<p>---</p>
+
+<h1>3. Contrastes que mais confundem</h1>
+
+<h2><code>trust</code> × <code>joy</code></h2>
+
+<ul>
+<li><code>trust</code>: confiança, recomendação, segurança, aprovação.</li>
+<li><code>joy</code>: satisfação, prazer, comemoração.</li>
+</ul>
+
+<p><strong>Exemplo fictício</strong></p>
+<ul>
+<li>“Essa empresa continua sendo uma das mais sólidas da carteira.” → <code>trust</code></li>
+<li>“Finalmente bateu meu alvo! Que maravilha!” → <code>joy</code></li>
+</ul>
+
+<p><strong>Veja o guideline completo:</strong> seção “Trust × Joy”.</p>
+
+<p>---</p>
+
+<h2><code>disgust</code> × <code>anger</code></h2>
+
+<ul>
+<li><code>disgust</code>: desprezo, rejeição, aversão.</li>
+<li><code>anger</code>: ataque, culpa, acusação, confronto.</li>
+</ul>
+
+<p><strong>Exemplo fictício</strong></p>
+<ul>
+<li>“Que empresa podre.” → <code>disgust</code></li>
+<li>“Esses diretores têm que responder por isso!” → <code>anger</code></li>
+</ul>
+
+<p><strong>Veja o guideline completo:</strong> seção “Disgust × Anger”.</p>
+
+<p>---</p>
+
+<h2><code>sadness</code> × <code>fear</code></h2>
+
+<ul>
+<li><code>sadness</code>: dano/perda já realizado ou atual.</li>
+<li><code>fear</code>: ameaça ou dano ainda possível.</li>
+</ul>
+
+<p><strong>Exemplo fictício</strong></p>
+<ul>
+<li>“Perdi boa parte do lucro hoje. Que decepção.” → <code>sadness</code></li>
+<li>“Se romper esse suporte, isso pode ficar muito feio.” → <code>fear</code></li>
+</ul>
+
+<p><strong>Veja o guideline completo:</strong> seção “Sadness × Fear”.</p>
+
+<p>---</p>
+
+<h2><code>anticipation</code> × <code>fear</code></h2>
+
+<p>Ambas podem olhar para o futuro.</p>
+
+<ul>
+<li><code>anticipation</code>: expectativa, curiosidade, prontidão.</li>
+<li><code>fear</code>: preocupação, ameaça, apreensão.</li>
+</ul>
+
+<p><strong>Exemplo fictício</strong></p>
+<ul>
+<li>“Quero ver como o mercado abre amanhã.” → <code>anticipation</code></li>
+<li>“Estou preocupado com o que pode acontecer amanhã.” → <code>fear</code></li>
+</ul>
+
+<p><strong>Veja o guideline completo:</strong> seção “Anticipation × Fear”.</p>
+
+<p>---</p>
+
+<h2><code>joy</code> × <code>anticipation</code></h2>
+
+<ul>
+<li><code>joy</code>: resultado positivo já atual/realizado.</li>
+<li><code>anticipation</code>: expectativa sobre o que ainda vai acontecer.</li>
+</ul>
+
+<p><strong>Exemplo fictício</strong></p>
+<ul>
+<li>“Subiu como eu esperava. Excelente!” → <code>joy</code></li>
+<li>“Se confirmar amanhã, pode ser uma ótima oportunidade.” → <code>anticipation</code></li>
+</ul>
+
+<p>---</p>
+
+<h2><code>surprise</code> × <code>anticipation</code></h2>
+
+<ul>
+<li><code>surprise</code>: o inesperado aconteceu/agora é percebido.</li>
+<li><code>anticipation</code>: algo ainda é esperado.</li>
+</ul>
+
+<p><strong>Exemplo fictício</strong></p>
+<ul>
+<li>“Como assim subiu 12% hoje?!” → <code>surprise</code></li>
+<li>“Vamos ver se consegue subir mais amanhã.” → <code>anticipation</code></li>
+</ul>
+
+<p>---</p>
+
+<h2>Emoção × <code>neutral</code></h2>
+
+<p>Escolha <code>neutral</code> quando a emoção só aparece porque <strong>você sabe</strong> que um fato financeiro é bom ou ruim.</p>
+
+<p><strong>Exemplo fictício</strong></p>
+<ul>
+<li>“PETR4 fechou a 38,20, alta de 2,1%.” → <code>neutral</code></li>
+<li>“PETR4 fechou a 38,20, alta de 2,1%. Finalmente!” → <code>joy</code></li>
+</ul>
+
+<p><strong>Veja o guideline completo:</strong> seção “Neutral e linguagem financeira”.</p>
+
+<p>---</p>
+
+<h1>4. Quatro alertas HARD</h1>
+
+<h2>4.1 Futuro não é automaticamente <code>anticipation</code></h2>
+
+<p>“amanhã”, “na próxima semana”, “alvo”, “projeção”, “vai testar” podem ser apenas informação técnica.</p>
+
+<h2>4.2 Negativo não é automaticamente emoção negativa</h2>
+
+<p>“caiu 8%”, “prejuízo”, “rating rebaixado” podem ser <code>neutral</code> se o post apenas informa.</p>
+
+<h2>4.3 Positivo não é automaticamente <code>joy</code> ou <code>trust</code></h2>
+
+<p>“lucro maior”, “ação subiu”, “recomendação de compra” podem ser apenas informação.</p>
+
+<h2>4.4 Risada não é automaticamente <code>joy</code></h2>
+
+<p><code>kkk</code>, <code>rs</code>, <code>haha</code> podem ser ironia, deboche ou desprezo.</p>
+
+<p>---</p>
+
+<h1>5. Retweet, citação e voz</h1>
+
+<p>Classifique o <strong>afeto comunicado pelo post como apresentado</strong>.</p>
+
+<p>Não tente descobrir o estado psicológico real do autor.</p>
+
+<p>Uma citação ou RT pode carregar afeto, mas não transforme automaticamente a emoção citada em emoção privada de quem repostou.</p>
+
+<p>Se a voz deixar o caso realmente ambíguo:</p>
+<ul>
+<li>escolha a melhor classe;</li>
+<li>marque ambiguidade;</li>
+<li>consulte o guideline completo.</li>
+</ul>
+
+<p>---</p>
+
+<h1>6. Ironia, sarcasmo e perguntas</h1>
+
+<p>Leia a função pragmática.</p>
+
+<p><strong>Exemplos fictícios</strong></p>
+<ul>
+<li>“Parabéns, conseguiram destruir a empresa 👏” → pode ser <code>anger</code> ou <code>disgust</code>, não <code>joy</code>.</li>
+<li>“Vai cair mais quanto agora?!” → pode ser <code>fear</code>, <code>anger</code> ou <code>surprise</code>, conforme o contexto.</li>
+<li>“Alguém sabe o preço de fechamento?” → provavelmente <code>neutral</code>.</li>
+</ul>
+
+<p>---</p>
+
+<h1>7. Confiança</h1>
+
+<p>Use:</p>
+
+<ul>
+<li><code>HIGH</code> — decisão clara.</li>
+<li><code>MEDIUM</code> — outra classe é plausível, mas uma é melhor.</li>
+<li><code>LOW</code> — caso realmente difícil; ainda assim, uma classe é a melhor escolha.</li>
+</ul>
+
+<p><code>LOW</code> não significa erro.</p>
+
+<p>---</p>
+
+<h1>8. Quando abrir o guideline completo</h1>
+
+<p>Abra o guideline completo se houver dúvida sobre:</p>
+
+<ul>
+<li><code>trust × joy</code>;</li>
+<li><code>disgust × anger</code>;</li>
+<li><code>sadness × fear</code>;</li>
+<li><code>anticipation × fear</code>;</li>
+<li><code>surprise × anticipation</code>;</li>
+<li>ironia/sarcasmo;</li>
+<li>retweet/citação;</li>
+<li>linguagem financeira técnica;</li>
+<li><code>neutral</code>;</li>
+<li>emojis, pontuação e risadas;</li>
+<li>mais de uma emoção plausível.</li>
+</ul>
+
+<p>---</p>
+
+<h1>9. O que você NÃO deve consultar</h1>
+
+<p>Durante a anotação, não veja:</p>
+
+<ul>
+<li>rótulos originais do DANTEStocks;</li>
+<li>rótulos SILVER;</li>
+<li>confidence da fonte;</li>
+<li>evidence spans;</li>
+<li>respostas de LLMs;</li>
+<li>respostas de outro anotador;</li>
+<li>distribuição de classes.</li>
+</ul>
+
+<p>---</p>
+
+<h2>Regra final</h2>
+
+<blockquote><strong>Leia o post inteiro. Escolha a única emoção que melhor representa o afeto central comunicado. Se nenhuma emoção for defensável, escolha <code>neutral</code>.</strong></blockquote></body></html>

@@ -1,0 +1,109 @@
+{
+  "assignment_id": "DEMO_A2_v0.2",
+  "annotator_id": "A2-DEMO",
+  "pilot_version": "0.2",
+  "guideline_version": "0.2",
+  "webapp_min_version": "0.4.0",
+  "randomization_seed": "DEMO-SEED-20260901",
+  "items": [
+    {
+      "post_id": "demo_001",
+      "text": "PETR4 fechou a 38,20, alta de 2,1%.",
+      "display_source_annotation": true,
+      "source_annotation": {
+        "labels": [
+          "joy"
+        ],
+        "note": "Emoção marcada como presente na anotação original."
+      }
+    },
+    {
+      "post_id": "demo_002",
+      "text": "Finalmente bateu meu alvo! Que maravilha!",
+      "display_source_annotation": false
+    },
+    {
+      "post_id": "demo_003",
+      "text": "Se perder esse suporte amanhã, isso pode ficar muito feio.",
+      "display_source_annotation": true,
+      "source_annotation": {
+        "labels": [
+          "fear",
+          "anticipation"
+        ],
+        "note": "Emoções marcadas como presentes na anotação original."
+      }
+    },
+    {
+      "post_id": "demo_004",
+      "text": "A empresa divulgará resultados amanhã após o pregão.",
+      "display_source_annotation": false
+    },
+    {
+      "post_id": "demo_005",
+      "text": "Essa diretoria precisa responder por isso!",
+      "display_source_annotation": true,
+      "source_annotation": {
+        "labels": [
+          "anger",
+          "disgust"
+        ],
+        "note": "Emoções marcadas como presentes na anotação original."
+      }
+    },
+    {
+      "post_id": "demo_006",
+      "text": "Como assim subiu 12% hoje?!",
+      "display_source_annotation": false
+    },
+    {
+      "post_id": "demo_007",
+      "text": "Continuo tranquilo com essa empresa no longo prazo.",
+      "display_source_annotation": true,
+      "source_annotation": {
+        "labels": [
+          "trust"
+        ],
+        "note": "Emoção marcada como presente na anotação original."
+      }
+    },
+    {
+      "post_id": "demo_008",
+      "text": "Suporte em 35, resistência em 38.",
+      "display_source_annotation": false
+    },
+    {
+      "post_id": "demo_009",
+      "text": "Parabéns à diretoria, mais um prejuízo histórico 👏",
+      "display_source_annotation": true,
+      "source_annotation": {
+        "labels": [
+          "disgust",
+          "sadness"
+        ],
+        "note": "Emoções marcadas como presentes na anotação original."
+      }
+    },
+    {
+      "post_id": "demo_010",
+      "text": "Quero ver se amanhã consegue romper 65.",
+      "display_source_annotation": false
+    },
+    {
+      "post_id": "demo_011",
+      "text": "Balanço será divulgado amanhã após o pregão.",
+      "display_source_annotation": true,
+      "source_annotation": {
+        "labels": [
+          "neutral"
+        ],
+        "note": "O item foi marcado como neutro na anotação original."
+      }
+    },
+    {
+      "post_id": "demo_012",
+      "text": "Estou preocupado com o que pode acontecer depois do anúncio.",
+      "display_source_annotation": false
+    }
+  ]
+}
