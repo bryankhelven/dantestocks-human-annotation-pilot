@@ -1,5 +1,5 @@
 "use strict";
-const APP_VERSION="1.0.0";
+const APP_VERSION="1.1.0";
 const DB_NAME="dantestocks-human-annotation-v06";
 const DB_VERSION=1;
 const STORE_STATE="state", STORE_SNAP="snapshots", STORE_HANDLES="handles";
@@ -87,9 +87,9 @@ function renderCurrent(){if(!assignment)return;if(allComplete()){showFinish();re
 }
 function updateHint(code){
   const box=$("dynamicHint");const e=EMOTIONS.find(x=>x.code===code);
-  box.classList.toggle("is-empty",!e);
-  if(!e){box.innerHTML='<div class="hint-empty">Selecione uma categoria. A checagem comparativa aparecerá aqui.</div>';return}
-  box.innerHTML=`<div class="hint-header"><strong>Checagem rápida: ${escapeHtml(e.name)}</strong><span>${e.code}</span></div><div class="hint-grid"><div class="hint-cell"><b>Centro</b>${escapeHtml(e.center)}</div><div class="hint-cell"><b>Compare com</b>${escapeHtml(e.compare)}</div><div class="hint-cell"><b>Não use só porque</b>${escapeHtml(e.not)}</div></div>`
+  if(!e){box.classList.add("hidden");box.innerHTML="";return}
+  box.classList.remove("hidden");
+  box.innerHTML=`<div class="insight-lead"><span class="insight-icon" aria-hidden="true">✓</span><div><span class="insight-kicker">CHECAGEM DA ESCOLHA</span><strong>${escapeHtml(e.name)}</strong></div><span class="insight-code">${e.code}</span></div><div class="insight-facts"><span><b>Centro</b>${escapeHtml(e.center)}</span><span><b>Compare</b>${escapeHtml(e.compare)}</span><span><b>Evite atalho</b>${escapeHtml(e.not)}</span></div>`
 }
 function updateControls(){const r=responseFor(currentItem().post_id);$("saveNext").disabled=!(r.primary_emotion&&r.confidence);$("prevItem").disabled=currentIndex===0;$("deferredCount").textContent=deferredCount()}
 function updateHeader(){const done=completedCount();$("progressText").textContent=`${done} / ${assignment.items.length}`;$("assignmentMeta").textContent=`${assignment.annotator_id} · Guideline ${assignment.guideline_version} · App ${APP_VERSION}`;$("deferredCount").textContent=deferredCount()}

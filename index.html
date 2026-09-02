@@ -118,51 +118,73 @@
           </div>
         </div>
 
-        <section class="reading-zone" aria-labelledby="readingLabel">
-          <div id="readingLabel" class="reading-label">POST PARA CLASSIFICAR</div>
-          <article id="postText" class="post-text"></article>
-        </section>
-
-        <section id="sourcePanel" class="source-panel" aria-label="Anotação original do DANTEStocks">
-          <div class="source-copy">
-            <strong>Anotação original do DANTEStocks</strong>
-            <span id="sourceStatusText">Informação de origem; não limita sua escolha.</span>
-          </div>
-          <div id="sourceLabels" class="source-labels"></div>
-          <div id="sourceNote" class="source-note"></div>
-        </section>
-
-        <section class="question-block">
-          <div>
-            <span class="question-kicker">DECISÃO PRINCIPAL</span>
-            <h2 class="question">Qual é a emoção predominante comunicada?</h2>
-          </div>
-          <p class="question-sub">Escolha uma única classe para o post como unidade discursiva.</p>
-        </section>
-
-        <div id="emotionGrid" class="emotion-grid" role="radiogroup" aria-label="Emoção predominante"></div>
-
-        <section id="dynamicHint" class="decision-hint is-empty" aria-live="polite">
-          <div class="hint-empty">Selecione uma categoria. A checagem comparativa aparecerá aqui.</div>
-        </section>
-
-        <section class="decision-meta">
-          <div class="confidence-block">
-            <div class="meta-heading">
-              <strong>Confiança</strong>
-              <span>Média vem selecionada por padrão.</span>
+        <div class="task-flow">
+          <section class="task-stage reading-stage" aria-labelledby="readingLabel">
+            <div class="stage-heading">
+              <span class="stage-number" aria-hidden="true">1</span>
+              <div>
+                <span class="stage-kicker">LEIA O POST</span>
+                <h2 id="readingLabel">Conteúdo a classificar</h2>
+              </div>
             </div>
-            <div id="confidenceControl" class="segmented" role="radiogroup" aria-label="Confiança"></div>
-          </div>
 
-          <label class="ambiguity-toggle">
-            <input id="ambiguity" type="checkbox">
-            <span>Caso especialmente ambíguo</span>
-          </label>
+            <article class="post-document">
+              <div id="postText" class="post-text"></div>
+            </article>
 
-          <button id="commentToggle" class="text-btn">+ Adicionar comentário</button>
-          <textarea id="comment" class="comment hidden" maxlength="1000" placeholder="Opcional: regra ausente, voz, ironia, termo financeiro, problema textual..."></textarea>
-        </section>
+            <section id="sourcePanel" class="source-provenance" aria-label="Anotação original do DANTEStocks">
+              <div class="source-copy">
+                <strong>Anotação original do DANTEStocks</strong>
+                <span id="sourceStatusText">Informação de origem; não limita sua escolha.</span>
+              </div>
+              <div id="sourceLabels" class="source-labels"></div>
+              <div id="sourceNote" class="source-note"></div>
+            </section>
+          </section>
+
+          <section class="task-stage decision-stage" aria-labelledby="decisionQuestion">
+            <div class="stage-heading decision-heading">
+              <span class="stage-number" aria-hidden="true">2</span>
+              <div>
+                <span class="stage-kicker">ESCOLHA UMA CLASSE</span>
+                <h2 id="decisionQuestion" class="question">Qual é a emoção predominante comunicada?</h2>
+                <p class="question-sub">Escolha uma única classe para o post como unidade discursiva.</p>
+              </div>
+            </div>
+
+            <div id="emotionGrid" class="emotion-grid" role="radiogroup" aria-label="Emoção predominante"></div>
+
+            <section id="dynamicHint" class="decision-insight hidden" aria-live="polite"></section>
+          </section>
+
+          <section class="task-stage confirm-stage">
+            <div class="stage-heading confirm-heading">
+              <span class="stage-number" aria-hidden="true">3</span>
+              <div>
+                <span class="stage-kicker">CONFIRME</span>
+                <h2>Finalize a decisão</h2>
+              </div>
+            </div>
+
+            <section class="decision-meta">
+              <div class="confidence-block">
+                <div class="meta-heading">
+                  <strong>Confiança</strong>
+                  <span>Média vem selecionada por padrão.</span>
+                </div>
+                <div id="confidenceControl" class="segmented" role="radiogroup" aria-label="Confiança"></div>
+              </div>
+
+              <label class="ambiguity-toggle">
+                <input id="ambiguity" type="checkbox">
+                <span>Caso especialmente ambíguo</span>
+              </label>
+
+              <button id="commentToggle" class="text-btn">+ Adicionar comentário</button>
+              <textarea id="comment" class="comment hidden" maxlength="1000" placeholder="Opcional: regra ausente, voz, ironia, termo financeiro, problema textual..."></textarea>
+            </section>
+          </section>
+        </div>
 
         <div class="shortcut-strip" aria-label="Atalhos de teclado">
           <span><kbd>1-9</kbd> labels</span>
